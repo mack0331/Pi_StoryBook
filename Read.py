@@ -20,49 +20,42 @@ import signal
 import time
 import pygame
 
-pygame.mixer.init()
+# Directory to ellie's audiobooks
+BOOK_DIRECTORY = '/home/pi/ellie_pi/'
+rfid_reader = SimpleMFRC522()
 
 IsPaused = False
 
+pygame.mixer.init()
+
 
 # This function should probably be in a separate file and imported into the read file
-def playaudio(audiofile):
-    global myprocess
-    global directory
+"""
+Plays audio
 
-    # Wth does status mean
-    # A better variable name might be...
-    # playingAudio = pygame.mixer.music.get_busy()
-    status = pygame.mixer.music.get_busy()
+:param audiofile: Path to audo file to play
+:return void: 
+"""
+def play_audio(audiofile):
+    global myprocess # Remove this if not needed
 
-    # Pretty sure python has the not keyword which gets the inverse of a boolean
-    # if not playingAudio
-    #   print("No audio playing, start playing new audio")
-    if status == False:
-        print("No audio playing, start playing new audio")
+    playing_audio = pygame.mixer.music.get_busy()
+
+    if not playing_audio:
+      print("No audio playing, start playing new audio")
 
     else:
         print("Audio alread playing, so quit current audio, then play")
         pygame.mixer.music.stop()
 
     # Load Music
-    pygame.mixer.music.load(directory + audiofile)
+    pygame.mixer.music.load(BOOK_DIRECTORY + audiofile)
 
     # Play Music
     pygame.mixer.music.play()
 
     # Is this time.sleep necessary?
     time.sleep(3)
-
-# Think of a better clearer name, reader is a bit vague imo
-# rfidReader = SimpleMFRC522()
-reader = SimpleMFRC522()
-
-# The global directory variable is made in the playAudio function.  Why?
-# If this will not/should not be changed yuo can make it a constant
-# ie: DIRECTORY = '/home/pi/ellie_pi/'
-# probably at the top of this page next to IsPause
-directory = '/home/pi/ellie_pi/'
 
 print("Let's listen to some stories!")
 
@@ -72,11 +65,9 @@ try:
     # while readyToReadRfidCard -> maybe more pythonic like this -> while ready_to_read_rfid_card
     while True:
 
-        # See status comment above
-        status = pygame.mixer.music.get_busy()
+        playing_audio = pygame.mixer.music.get_busy()
 
-        # See if status comment above
-        if status == False:
+        if not playing_audio:
 
             # What does this do?  Generates a new int in base 10?
             current_book_id = int(10)
@@ -84,23 +75,23 @@ try:
         start_time = time.time()
 
         print("Ready to Read a Book")
-        id, book = reader.read()
+        id, book = rfid_reader.read()
         if id == None:
-            # You probably shouldn't be overwriting status here with your own boolean
+            # You probably shouldn't be overwriting playing_audio here with your own boolean
             # you should call pygame.mixer.music.get_busy() and get that value
-            status = True
+            playing_audio = True
         print("Playing AudioBook: " + book)
         print("ID is: " + str(id))
         book = book.strip() # no im not strippin for u, wth is this? removes empty space at the end of a string?
 
         if current_book_id !=  id:
             current_book_id = id
-            playaudio(book)
+            play_audio(book)
         else:
             end_time = time.time()
             elapsed_time = end_time - start_time
 
-        if status == True:
+        if playing_audio == True:
             if elapsed_time > 0.6:
                 if IsPaused == True:
                     pygame.mixer.music.unpause()
