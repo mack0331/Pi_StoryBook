@@ -9,6 +9,6 @@ try:
         text = input('New data:')
         print("Now place your tag to write")
         reader.write(text)
-        print("Written")
+        print("Tag Written: New data = " + text)
 finally:
         GPIO.cleanup()
