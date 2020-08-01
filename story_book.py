@@ -6,8 +6,8 @@ from mfrc522 import SimpleMFRC522
 from models.book import Book
 
 class StoryBook:
-    BOOK_DIRECTORY = '/home/pi/ellie_pi/book_files/'
-    #BOOK_DIRECTORY = '/home/pi/projects/Pi_StoryBook/book_files/'
+    # BOOK_DIRECTORY = '/home/pi/ellie_pi/book_files/'
+    BOOK_DIRECTORY = '/home/pi/projects/Pi_StoryBook/book_files/'
     book_has_started_playing = False 
 
     def __init__(self):
@@ -51,7 +51,7 @@ class StoryBook:
                 
                 if not self.book_has_started_playing:
                     self.play_audio(bookData.name)
-                if not self.is_playing_audio():
+                else:
                     self.unpause_audio()
 
                 pause_audio_timer.cancel()
@@ -129,10 +129,12 @@ class StoryBook:
 
     """
     Returns true if pygame is playing audio, otherwise false
+    NOTE: RETURNS TRUE EVEN IF AUDIO IS PAUSED
 
     :return boolean: 
     """
     def is_playing_audio(self):
+        print('is_playing_audio called')
         return pygame.mixer.music.get_busy()
 
     """
