@@ -6,9 +6,10 @@ from mfrc522 import SimpleMFRC522
 from models.book import Book
 
 class StoryBook:
-    # BOOK_DIRECTORY = '/home/pi/ellie_pi/book_files/'
-    BOOK_DIRECTORY = '/home/pi/projects/Pi_StoryBook/book_files/'
+    BOOK_DIRECTORY = '/home/pi/ellie_pi/book_files/'
+    #BOOK_DIRECTORY = '/home/pi/projects/Pi_StoryBook/book_files/'
     book_has_started_playing = False 
+    current_book_name = None
 
     def __init__(self):
         print('StoryBook Initialized!')
@@ -48,8 +49,12 @@ class StoryBook:
 
                 # NOTE: Because this blocks the main thread the audio book will stop if no rfid card is present
                 bookData = self.read_rfid_card()
-                
-                if not self.book_has_started_playing:
+
+                if self.current_book_name == None or self.current_book_name != bookData.name:
+                    self.current_book_name = bookData.name
+                    self.book_has_started_playing = False  # Reset if new book name
+
+                if self.book_has_started_playing == False:
                     self.play_audio(bookData.name)
                 else:
                     self.unpause_audio()
