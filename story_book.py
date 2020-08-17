@@ -83,7 +83,8 @@ class StoryBook:
             pygame.mixer.music.play()
             self.book_has_started_playing = True
         except:
-            raise Exception('Error while playing audio')
+            print('Error while playing audio')
+            pass
         finally:
             pass
 
@@ -98,7 +99,8 @@ class StoryBook:
             # Stop Music
             pygame.mixer.music.stop()
         except:
-            raise Exception('Error while stopping audio')
+            print('Error while stopping audio')
+            pass
         finally:
             pass
 
@@ -113,7 +115,8 @@ class StoryBook:
             # Pause Music
             pygame.mixer.music.pause()
         except:
-            raise Exception('Error while pausing audio')
+            print('Error while pausing audio')
+            pass
         finally:
             pass
 
@@ -128,7 +131,8 @@ class StoryBook:
             # Unpause Music
             pygame.mixer.music.unpause()
         except:
-            raise Exception('Error while unpausing audio')
+            print('Error while unpausing audio')
+            pass
         finally:
             pass
 
@@ -156,7 +160,8 @@ class StoryBook:
             print ("book: " + book)
             return Book(id, book)
         except:
-            raise Exception('Error reading id and book name')
+            print('Error reading id and book name')
+            pass
         finally:
             pass
     
